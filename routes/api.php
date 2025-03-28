@@ -37,7 +37,7 @@ Route::apiResource('/categories', CategoryController::class);
 Route::apiResource('/comments', CommentController::class);
 Route::apiResource('/newsletter', NewsletterController::class);
 
-Route::delete('/comments/{id}', [CommentController::class,'destroy']);
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
