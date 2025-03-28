@@ -40,6 +40,8 @@ Route::post('/login', function (Request $request) {
         'email' => 'required|email',
         'password' => 'required'
     ]);
+Route::delete('/comments/{id}', [CommentController::class,'destroy']);
+
 
     $user = User::where('email', $request->email)->first();
 
