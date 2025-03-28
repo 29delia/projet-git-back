@@ -16,15 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        
+
 
         Comment::factory(50)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'gigi',
-        //     'email' => 'dixneuf@gmail.com',
-        //     'password' => Hash::make('dixneuf19'),
-        // ]);
+        \App\Models\User::factory()->create([
+            'name' => 'gigi',
+            'email' => 'ephraim30@gmail.com',
+            'password' => Hash::make('password'),
+        ]);
 
         // $this->call(ArcticleSeeder::class);
 
@@ -33,6 +33,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(CategorySeeder::class);
 
 
-        
+
     }
 }
