@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use App\Http\Resources\CommentResource;
 
 class CommentController extends Controller
 {
@@ -12,9 +13,7 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $commment = Comment::all();
 
-        return $commment;
     }
 
     /**
@@ -22,20 +21,29 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        // Validation des données
-        $validated = $request->validate([
-            'content' => 'required|string',
-            'article_id' => 'required|exists:articles,id',
-            'auteur' => 'required|string',
-        ]);
+        try {
+            $validated = $request->validate([
+                'content' => 'required|string',
+                'article_id' => 'required',
 
-        // Création du commentaire
-        $comment = Comment::create($validated);
 
-        return response()->json([
-            'message' => 'Commentaire ajouté avec succès !',
-            'comment' => $comment
-        ], 201);
+
+
+            ]);
+            $validated['user_id'] = auth()->user()->id;
+            $comment = Comment::create($validated);
+
+            return response()->json([
+                "message" => "Comment add succesfully",
+                "comment" => $comment
+            ]);
+
+
+
+        } catch (\Exception $exception) {
+
+            return response()->json(['error' => 'An error occurred: ' . $exception->getMessage()], 500);
+        }
     }
 
     /**
@@ -43,7 +51,11 @@ class CommentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Récupérer les commentaires de l'article avec l'ID spécifié
+        $comments = Comment::with('user')->where('article_id', $id)->get();
+
+        // Retourner la collection des commentaires sous forme de CommentResource
+        return CommentResource::collection($comments);
     }
 
     /**
@@ -59,14 +71,30 @@ class CommentController extends Controller
      */
     public function destroy(string $id)
     {
-        $comment=Comment::find($id);
-        if (!$comment){
+        try {
+            // Récupérer le commentaire à supprimer
+            $comment = Comment::findOrFail($id);
+
+            // Vérifier si l'utilisateur connecté est l'auteur du commentaire
+            if ($comment->user_id !== auth()->user()->id) {
+                return response()->json([
+                    'error' => 'You are not authorized to delete this comment.'
+                ], 403); // 403 Forbidden
+            }
+
+            // Supprimer le commentaire
+            $comment->delete();
+
             return response()->json([
-                'message' => 'commentaire non trouvé !'
-            ] ,404);
+                'message' => 'Comment deleted successfully.'
+            ], 200);
+
+        } catch (\Exception $exception) {
+            // Gérer les erreurs
+            return response()->json([
+                'error' => 'An error occurred: ' . $exception->getMessage()
+            ], 500);
         }
-        $comment->delete();
-        return response()->json([
-        ],200);
     }
+
 }

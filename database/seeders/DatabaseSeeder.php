@@ -6,8 +6,11 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use League\CommonMark\Extension\Table\Table;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,18 +23,22 @@ class DatabaseSeeder extends Seeder
 
         Comment::factory(50)->create();
 
-        \App\Models\User::factory()->create([
-            'name' => 'gigi',
-            'email' => 'ephraim30@gmail.com',
-            'password' => Hash::make('password'),
-        ]);
+        // User::factory()->create([
+        //     'name' => 'gigi',
+        //     'email' => 'ggig19@gmail.com',
+        //     'password' => Hash::make('password'),
+        // ]);
+        // User::factory(20)->create();
+        // $this->call(CategorySeeder::class);
+        // $this->call(TagsSeeder::class);
+   
+
+        
+
 
         // $this->call(ArcticleSeeder::class);
 
-        // $this->call(CommentSeeder::class);
-
-        // $this->call(CategorySeeder::class);
-
+        $this->call(CommentSeeder::class);
 
 
     }
